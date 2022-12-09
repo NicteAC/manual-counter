@@ -1,24 +1,23 @@
-# counter
+# Proyecto Contador Manual
 
-## Project setup
-```
-yarn install
-```
+## Realizado con
 
-### Compiles and hot-reloads for development
 ```
-yarn serve
+Vue2, Vuex, RouterVue y socket.io
 ```
 
-### Compiles and minifies for production
+### Credenciales
+
 ```
-yarn build
+Usuario: clicker.demo
 ```
 
-### Lints and fixes files
 ```
-yarn lint
+Email: clicker.demo.ikcount@iklab.cl
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+```
+Contraseña: TEST.2022#
+```
+
+#### By Nicte 💜

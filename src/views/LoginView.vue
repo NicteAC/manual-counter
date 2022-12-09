@@ -39,7 +39,7 @@
                       >
                         <button
                           class="btn btn-primary ms-auto text-white"
-                          @click.prevent="userLogin"
+                          @click.prevent="Login()"
                         >
                           Login
                         </button>
@@ -59,41 +59,24 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import { mapActions } from "vuex";
 export default {
   name: "LoginView",
   data() {
     return {
       user: "",
       pass: "",
-      api_base_url: "https://ikcount.com/iklab",
     };
   },
   methods: {
-    stringTob64(user_, pass_) {
-      let key_ = "IKLAB005";
-      let string_ = `${user_}:${pass_}:${key_}`;
-      return btoa(string_);
-    },
-    async userLogin() {
-      let url = `${this.api_base_url}/api/login`;
-      let data = {
-        auth: this.stringTob64(this.user, this.pass),
-        privilegesDetail: true,
+    ...mapActions(["userLogin"]),
+    Login() {
+      console.log("pass", this.pass);
+      let credentials = {
+        user: this.user,
+        pass: this.pass,
       };
-      console.log("url", url);
-      console.log("data", data);
-      await axios
-        .post(url, data)
-        .then((res) => {
-          console.log("respuesta login", res);
-          localStorage.setItem("user_data", JSON.stringify(res.data));
-          this.$router.push({ name: "home" });
-        })
-        .catch((err) => {
-          alert("Verifica los datos ingresados e intentalo nuevamente.");
-          console.error("Error al iniciar sesión", err);
-        });
+      this.userLogin(credentials);
     },
   },
 };

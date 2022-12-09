@@ -30,13 +30,13 @@
               <div class="card-body d-flex justify-content-center">
                 <button
                   class="btn btn-success"
-                  @click="counterManualMod('manual-add', 1)"
+                  @click="counterAddSub('manual-add')"
                 >
                   +
                 </button>
                 <button
                   class="btn btn-danger ms-3"
-                  @click="counterManualMod('manual-sub', 1)"
+                  @click="counterManualMod('manual-sub')"
                 >
                   -
                 </button>
@@ -63,74 +63,65 @@
   </div>
 </template>
 
-<script setup></script>
 <script>
 import NavBar from "@/components/NavBar.vue";
 import SideBar from "@/components/SideBar.vue";
 import io from "socket.io-client";
-import axios from "axios";
+import { mapActions, mapState } from "vuex";
 export default {
   name: "HomeView",
   components: { NavBar, SideBar },
   data() {
     return {
-      user_data: {},
       socket: {},
       socketCounter: 0,
       sio_base_url: "https://ikcount.com",
-      api_base_url: "https://ikcount.com/iklab",
     };
   },
   created() {
     this.getUserData();
     this.connectSocket(this.getUrlSIO());
-
     this.socket.on("welcome", (data) => {
       console.log("bienvenido", data);
+      this.socketCounter = data.occupancy;
     });
     this.socket.on("heartbeat", (data) => {
       console.log("heartbeat", data);
+      this.socketCounter = data.occupancy;
     });
-    this.socket.on("summary", (data) => {
-      console.log("summary", data);
-    });
-    this.socket.on("status", (data) => {
-      // aca se obtiene el valor que devuelve el evento de estado
-      this.socketCounter = data.quantity;
+    this.socket.on("raw", (data) => {
+      console.log("data del raw", data);
+      this.socketCounter = data.occupancy;
     });
     this.socket.on("disconnect", (reason) => {
       console.log("socket desconectado", reason);
     });
-    this.socket.on("connect", () => {
-      console.log("socket conectado");
-    });
   },
   mounted() {},
+  computed: {
+    ...mapState(["userData"]),
+  },
   methods: {
+    ...mapActions(["counterManualMod"]),
+    counterAddSub(type_) {
+      let payload = {
+        url: `https://ikcount.com/iklab/ikcount/api/livecommand?atoken=${this.user_data.access_token}`,
+        data: {
+          type: type_,
+          quantity: 1,
+          client: this.userData.privileges.devices[0].client_id,
+          location: this.userData.privileges.locations[0].location_id,
+          macaddress: this.userData.privileges.devices[0].mac_address,
+          username: this.userData.username,
+          email: this.userData.email,
+        },
+      };
+      this.counterManualMod(payload);
+    },
     getUrlSIO() {
       return `${this.sio_base_url}/live?atoken=${this.user_data.access_token}`;
     },
-    getUserData() {
-      this.user_data = JSON.parse(localStorage.getItem("user_data"));
-    },
-    async counterManualMod(type_, quantity_) {
-      let url_ = `${this.api_base_url}/ikcount/api/livecommand?atoken=${this.user_data.access_token}`;
-      let data_ = {
-        type: type_,
-        quantity: quantity_,
-        client: this.user_data.privileges.devices[0].client_id,
-        location: this.user_data.privileges.locations[0].location_id,
-        macaddress: this.user_data.privileges.devices[0].mac_address,
-        username: this.user_data.username,
-        email: this.user_data.email,
-      };
-      console.log("data", data_);
-      await axios.post(url_, data_).then((res) => {
-        console.log("respuesta ws", res);
-      });
-    },
     disconnectSocket() {
-      this.socket.disconnect();
       localStorage.clear();
       this.$router.push({ name: "login" });
     },
