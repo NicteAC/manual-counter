@@ -85,20 +85,16 @@ export default {
     this.getUserData();
     this.connectSocket(this.getUrlSIO());
     this.socket.on("welcome", (data) => {
-      console.log("bienvenido", data);
       this.socketCounter = data.occupancy;
     });
     this.socket.on("heartbeat", (data) => {
-      console.log("heartbeat", data);
       this.socketCounter = data.occupancy;
     });
     this.socket.on("raw", (data) => {
-      console.log("data del raw", data);
       this.socketCounter = data.occupancy;
     });
-    this.socket.on("disconnect", (reason) => {
-      console.log("socket desconectado", reason);
-    });
+    // eslint-disable-next-line no-unused-vars
+    this.socket.on("disconnect", (reason) => {});
   },
   mounted() {},
   computed: {

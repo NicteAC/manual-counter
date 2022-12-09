@@ -71,7 +71,6 @@ export default {
   methods: {
     ...mapActions(["userLogin"]),
     Login() {
-      console.log("pass", this.pass);
       let credentials = {
         user: this.user,
         pass: this.pass,
