@@ -39,7 +39,6 @@ export default createStore({
     },
     // eslint-disable-next-line no-unused-vars
     async counterManualMod({ commit }, payload_) {
-      console.log("payload", payload_);
       // eslint-disable-next-line no-unused-vars
       await axios.post(payload_.url, payload_.data).then((res) => {});
     },
