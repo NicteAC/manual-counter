@@ -124,6 +124,9 @@ export default {
       this.user_data = JSON.parse(localStorage.getItem("user_data"));
     },
     disconnectSocket() {
+      this.socket.emit("status", {}, (data) => {
+        console.log("data disconnect", data);
+      });
       localStorage.clear();
       this.$router.push({ name: "login" });
     },
