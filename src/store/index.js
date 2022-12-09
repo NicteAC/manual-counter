@@ -29,6 +29,7 @@ export default createStore({
         .post(url, data)
         .then((res) => {
           commit("SET_DATA", res.data);
+          localStorage.setItem("user_data", JSON.stringify(res.data));
           router.push("/home");
         })
         .catch((err) => {

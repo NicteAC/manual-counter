@@ -63,6 +63,7 @@
   </div>
 </template>
 
+<script setup></script>
 <script>
 import NavBar from "@/components/NavBar.vue";
 import SideBar from "@/components/SideBar.vue";
@@ -73,9 +74,11 @@ export default {
   components: { NavBar, SideBar },
   data() {
     return {
+      user_data: {},
       socket: {},
       socketCounter: 0,
       sio_base_url: "https://ikcount.com",
+      api_base_url: "https://ikcount.com/iklab",
     };
   },
   created() {
@@ -109,17 +112,20 @@ export default {
         data: {
           type: type_,
           quantity: 1,
-          client: this.userData.privileges.devices[0].client_id,
-          location: this.userData.privileges.locations[0].location_id,
-          macaddress: this.userData.privileges.devices[0].mac_address,
-          username: this.userData.username,
-          email: this.userData.email,
+          client: this.user_data.privileges.devices[0].client_id,
+          location: this.user_data.privileges.locations[0].location_id,
+          macaddress: this.user_data.privileges.devices[0].mac_address,
+          username: this.user_data.username,
+          email: this.user_data.email,
         },
       };
       this.counterManualMod(payload);
     },
     getUrlSIO() {
       return `${this.sio_base_url}/live?atoken=${this.user_data.access_token}`;
+    },
+    getUserData() {
+      this.user_data = JSON.parse(localStorage.getItem("user_data"));
     },
     disconnectSocket() {
       localStorage.clear();
