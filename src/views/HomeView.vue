@@ -36,7 +36,7 @@
                 </button>
                 <button
                   class="btn btn-danger ms-3"
-                  @click="counterManualMod('manual-sub')"
+                  @click="counterAddSub('manual-sub')"
                 >
                   -
                 </button>
